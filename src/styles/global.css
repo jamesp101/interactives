@@ -782,3 +782,207 @@ table.hx-slots th {
   font-style: italic;
   opacity: 0.7;
 }
+
+/* filesystem hierarchy */
+.fs-search {
+  flex: 1;
+  min-width: 12rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.fs-count {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.fs-filters {
+  margin: 0.6rem 0 1rem;
+}
+
+.fs-cols {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .fs-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fs-tree {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.fs-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.22rem 0.5rem;
+  padding-left: calc(0.5rem + var(--depth) * 1.15rem);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.fs-row:hover {
+  background: #5b8dee1a;
+}
+
+.fs-row.sel {
+  background: #5b8dee2e;
+  outline: 1px solid var(--accent);
+}
+
+.fs-row.hit .fs-name {
+  color: var(--sorted);
+}
+
+.fs-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.fs-twisty {
+  width: 0.8rem;
+  flex: none;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+}
+
+.fs-name {
+  font-family: ui-monospace, monospace;
+  color: var(--text);
+  flex: none;
+}
+
+.fs-row-summary {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fs-empty {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 0.6rem;
+  margin: 0;
+}
+
+.fs-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.fs-crumb {
+  font-family: ui-monospace, monospace;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+.fs-crumb-seg {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.fs-crumb-seg:hover {
+  text-decoration: underline;
+}
+
+.fs-summary-text {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.fs-chips {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.fs-class.static,
+.fs-class.shareable {
+  color: var(--sorted);
+  border-color: color-mix(in srgb, var(--sorted) 35%, transparent);
+}
+
+.fs-class.variable,
+.fs-class.unshareable {
+  color: var(--compare);
+  border-color: color-mix(in srgb, var(--compare) 35%, transparent);
+}
+
+.fs-detail-text {
+  margin: 0 0 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.fs-spec {
+  margin: 0 0 0.7rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  border-left: 2px solid var(--pivot);
+  padding-left: 0.6rem;
+}
+
+.fs-spec.hidden,
+.fs-examples.hidden {
+  display: none;
+}
+
+.fs-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fs-examples-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  width: 100%;
+  margin-bottom: 0.1rem;
+}
+
+.fs-examples code {
+  font-size: 0.75rem;
+  background: #5b8dee1f;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.1rem 0.45rem;
+  color: var(--text);
+}
+
+.fs-matrix th {
+  text-align: center;
+}
+
+.fs-matrix code {
+  font-size: 0.8rem;
+}

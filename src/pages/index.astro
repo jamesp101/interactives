@@ -27,6 +27,8 @@ const ICONS: Record<string, string> = {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>',
   hooks:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(120 12 12)"/></svg>',
+  filesystem:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h5l2 2.5h9v13H4z"/><path d="M4 11h16"/></svg>',
 };
 
 interface Card {
@@ -72,6 +74,15 @@ const sections: { name: string; cards: Card[] }[] = [
         kind: 'storage',
         metas: ['5 levels', 'failure sim'],
         icon: ICONS.raid!,
+        tint: '#9b5de5',
+      },
+      {
+        href: `${base}viz/filesystem/`,
+        title: 'Linux Filesystem Hierarchy',
+        desc: 'What lives in /usr, /var, /etc, and the rest of the FHS tree — browsable, searchable, and classified by static vs. variable and shareable vs. unshareable.',
+        kind: 'filesystem',
+        metas: ['FHS 3.0', '39 directories'],
+        icon: ICONS.filesystem!,
         tint: '#9b5de5',
       },
     ],

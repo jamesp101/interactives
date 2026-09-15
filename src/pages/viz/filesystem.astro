@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Linux Filesystem Hierarchy — Interactive Algorithms">
+  <h1>Linux Filesystem Hierarchy</h1>
+  <p class="desc">
+    Unix systems put everything under a single root, <code>/</code>, and the Filesystem Hierarchy
+    Standard defines what belongs where. Browse the tree, search for a file or purpose, or filter by
+    the two axes the standard cares about: static vs. variable, and shareable vs. unshareable.
+  </p>
+
+  <div class="fs-root">
+    <div class="viz-controls">
+      <input class="fs-search" type="search" placeholder="Search paths, purposes, contents…" />
+      <button class="fs-expand">Expand all</button>
+      <button class="fs-collapse">Collapse</button>
+      <span class="fs-count"></span>
+    </div>
+    <div class="chip-row fs-filters" role="group" aria-label="Filter directories">
+      <button class="chip active" data-filter="all">all</button>
+      <button class="chip" data-filter="static">static</button>
+      <button class="chip" data-filter="variable">variable</button>
+      <button class="chip" data-filter="shareable">shareable</button>
+      <button class="chip" data-filter="unshareable">unshareable</button>
+    </div>
+
+    <div class="fs-cols">
+      <div class="fs-tree" role="tree" aria-label="Filesystem hierarchy"></div>
+      <aside class="fs-detail">
+        <div class="fs-crumb"></div>
+        <p class="fs-summary-text"></p>
+        <div class="fs-chips"></div>
+        <p class="fs-detail-text"></p>
+        <p class="fs-spec hidden"></p>
+        <div class="fs-examples"></div>
+      </aside>
+    </div>
+    <p class="raid-hint">
+      Click a directory to expand and inspect it; arrow keys navigate the tree.
+    </p>
+
+    <h2>Why the split exists</h2>
+    <p class="desc">
+      FHS separates files along two axes so they can live on different filesystems: static files can
+      sit on read-only media, and shareable files can be served to several hosts at once. The
+      standard gives this example layout:
+    </p>
+    <table class="complexity fs-matrix">
+      <thead>
+        <tr><th></th><th>shareable</th><th>unshareable</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>static</th><td><code>/usr</code>, <code>/opt</code></td><td><code>/etc</code>, <code>/boot</code></td></tr>
+        <tr><th>variable</th><td><code>/var/mail</code>, <code>/var/spool/news</code></td><td><code>/var/run</code>, <code>/var/lock</code></td></tr>
+      </tbody>
+    </table>
+    <p class="raid-hint">Source: Filesystem Hierarchy Standard 3.0, §2.</p>
+  </div>
+</Base>
+
+<script>
+  import { initFilesystem } from '../../scripts/filesystem';
+  document.querySelectorAll<HTMLElement>('.fs-root').forEach(initFilesystem);
+</script>
