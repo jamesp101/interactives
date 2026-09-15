@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { algorithms } from '../lib/registry';
+
+const base = import.meta.env.BASE_URL;
+const sorting = algorithms.filter((a) => a.category === 'sorting');
+const searching = algorithms.filter((a) => a.category === 'searching');
+---
+
+<Base title="Interactive Algorithms">
+  <h1>Algorithm Visualizations</h1>
+  <p class="desc">
+    Interactive, step-by-step visualizations of classic sorting and searching algorithms. Pick one,
+    press Play, and watch it work — or single-step through every comparison and swap.
+  </p>
+
+  <h2>Sorting</h2>
+  <div class="card-grid">
+    {
+      sorting.map((a) => (
+        <a class="card" href={`${base}viz/${a.slug}/`}>
+          <h3>{a.title}</h3>
+          <p>{a.description}</p>
+          <span class="badge">avg {a.complexity.average}</span>
+        </a>
+      ))
+    }
+  </div>
+
+  <h2>Searching</h2>
+  <div class="card-grid">
+    {
+      searching.map((a) => (
+        <a class="card" href={`${base}viz/${a.slug}/`}>
+          <h3>{a.title}</h3>
+          <p>{a.description}</p>
+          <span class="badge">avg {a.complexity.average}</span>
+        </a>
+      ))
+    }
+  </div>
+</Base>

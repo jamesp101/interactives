@@ -1,0 +1,52 @@
+---
+interface Props {
+  slug: string;
+  category: 'sorting' | 'searching';
+}
+
+const { slug, category } = Astro.props;
+---
+
+<div class="viz-root" data-slug={slug} data-category={category}>
+  <div class="viz-controls">
+    <button class="ctl-play">Play</button>
+    <button class="ctl-step">Step</button>
+    <button class="ctl-reset">Reset</button>
+    <button class="ctl-new">New Array</button>
+    <label>
+      Speed
+      <input class="ctl-speed" type="range" min="0" max="100" value="50" />
+    </label>
+    {
+      category === 'sorting' && (
+        <label>
+          Size
+          <input class="ctl-size" type="range" min="10" max="150" value="40" />
+        </label>
+      )
+    }
+    {
+      category === 'searching' && (
+        <label>
+          Target
+          <input class="ctl-target" type="number" />
+        </label>
+      )
+    }
+  </div>
+  <div class="viz-canvas-wrap">
+    <canvas></canvas>
+  </div>
+  <div class="legend">
+    <span style="--swatch: #5b8dee">unsorted</span>
+    <span style="--swatch: #f2b134">comparing</span>
+    <span style="--swatch: #e4572e">{category === 'searching' ? 'probing' : 'swapping'}</span>
+    {category === 'sorting' && slug === 'quick-sort' && <span style="--swatch: #9b5de5">pivot</span>}
+    <span style="--swatch: #3ddc84">{category === 'searching' ? 'found' : 'sorted'}</span>
+  </div>
+</div>
+
+<script>
+  import { initVisualizer } from '../scripts/player';
+  document.querySelectorAll<HTMLElement>('.viz-root').forEach(initVisualizer);
+</script>

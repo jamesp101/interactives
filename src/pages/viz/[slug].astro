@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Visualizer from '../../components/Visualizer.astro';
+import { algorithms, type AlgoMeta } from '../../lib/registry';
+
+export function getStaticPaths() {
+  return algorithms.map((a) => ({ params: { slug: a.slug }, props: { algo: a } }));
+}
+
+interface Props {
+  algo: AlgoMeta;
+}
+
+const { algo } = Astro.props;
+---
+
+<Base title={`${algo.title} — Interactive Algorithms`}>
+  <h1>{algo.title}</h1>
+  <p class="desc">{algo.description}</p>
+  <table class="complexity">
+    <thead>
+      <tr><th>Best</th><th>Average</th><th>Worst</th><th>Space</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{algo.complexity.best}</td>
+        <td>{algo.complexity.average}</td>
+        <td>{algo.complexity.worst}</td>
+        <td>{algo.complexity.space}</td>
+      </tr>
+    </tbody>
+  </table>
+  <Visualizer slug={algo.slug} category={algo.category} />
+</Base>
