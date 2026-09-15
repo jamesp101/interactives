@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Grid Playground — Interactive Algorithms">
+  <h1>Grid Playground</h1>
+  <p class="desc">
+    CSS Grid places items in rows and columns at once. Change the track count, gap, and item
+    alignment below; click an item to make it span multiple columns or rows.
+  </p>
+  <div class="pg-root">
+    <div class="pg-props">
+      <div class="pg-prop">
+        <span class="pg-label">columns</span>
+        <input class="pg-cols" type="range" min="1" max="6" value="3" />
+        <span class="pg-cols-val">3</span>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">justify-items</span>
+        <div class="chip-row" data-prop="justify-items">
+          <button class="chip" data-value="stretch">stretch</button>
+          <button class="chip" data-value="start">start</button>
+          <button class="chip" data-value="center">center</button>
+          <button class="chip" data-value="end">end</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">align-items</span>
+        <div class="chip-row" data-prop="align-items">
+          <button class="chip" data-value="stretch">stretch</button>
+          <button class="chip" data-value="start">start</button>
+          <button class="chip" data-value="center">center</button>
+          <button class="chip" data-value="end">end</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">gap</span>
+        <input class="pg-gap" type="range" min="0" max="32" value="8" />
+        <span class="pg-gap-val">8px</span>
+        <button class="pg-add">Add item</button>
+        <button class="pg-remove">Remove item</button>
+      </div>
+    </div>
+    <div class="pg-stage grid"></div>
+    <div class="pg-item-panel hidden">
+      <span class="pg-label pg-item-title">Item 1</span>
+      <div class="pg-prop">
+        <span class="pg-label">column span</span>
+        <div class="chip-row" data-prop="column-span" data-scope="item">
+          <button class="chip" data-value="1">1</button>
+          <button class="chip" data-value="2">2</button>
+          <button class="chip" data-value="3">3</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">row span</span>
+        <div class="chip-row" data-prop="row-span" data-scope="item">
+          <button class="chip" data-value="1">1</button>
+          <button class="chip" data-value="2">2</button>
+          <button class="chip" data-value="3">3</button>
+        </div>
+      </div>
+    </div>
+    <p class="raid-hint">Click an item on the stage to edit its spans.</p>
+    <pre class="pg-code"></pre>
+  </div>
+</Base>
+
+<script>
+  import { initGrid } from '../../scripts/grid';
+  document.querySelectorAll<HTMLElement>('.pg-root').forEach(initGrid);
+</script>

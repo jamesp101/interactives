@@ -140,7 +140,7 @@ function cellRecoverable(level: Level, n: number, failed: Set<number>, cell: Cel
 }
 
 export function initRaid(root: HTMLElement): void {
-  const chips = [...root.querySelectorAll<HTMLButtonElement>('.raid-chip')];
+  const chips = [...root.querySelectorAll<HTMLButtonElement>('.chip[data-level]')];
   const disksInput = root.querySelector<HTMLInputElement>('.raid-disks-input')!;
   const disksVal = root.querySelector<HTMLElement>('.raid-disks-val')!;
   const writeBtn = root.querySelector<HTMLButtonElement>('.raid-write')!;

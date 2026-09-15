@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Flexbox Playground — Interactive Algorithms">
+  <h1>Flexbox Playground</h1>
+  <p class="desc">
+    Flexbox lays out items along one axis and distributes free space between them. Toggle the
+    container properties below and watch the stage update; click an item to give it its own
+    flex-grow and align-self.
+  </p>
+  <div class="pg-root">
+    <div class="pg-props">
+      <div class="pg-prop">
+        <span class="pg-label">flex-direction</span>
+        <div class="chip-row" data-prop="flex-direction">
+          <button class="chip" data-value="row">row</button>
+          <button class="chip" data-value="row-reverse">row-reverse</button>
+          <button class="chip" data-value="column">column</button>
+          <button class="chip" data-value="column-reverse">column-reverse</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">justify-content</span>
+        <div class="chip-row" data-prop="justify-content">
+          <button class="chip" data-value="flex-start">flex-start</button>
+          <button class="chip" data-value="center">center</button>
+          <button class="chip" data-value="flex-end">flex-end</button>
+          <button class="chip" data-value="space-between">space-between</button>
+          <button class="chip" data-value="space-around">space-around</button>
+          <button class="chip" data-value="space-evenly">space-evenly</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">align-items</span>
+        <div class="chip-row" data-prop="align-items">
+          <button class="chip" data-value="stretch">stretch</button>
+          <button class="chip" data-value="flex-start">flex-start</button>
+          <button class="chip" data-value="center">center</button>
+          <button class="chip" data-value="flex-end">flex-end</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">flex-wrap</span>
+        <div class="chip-row" data-prop="flex-wrap">
+          <button class="chip" data-value="nowrap">nowrap</button>
+          <button class="chip" data-value="wrap">wrap</button>
+          <button class="chip" data-value="wrap-reverse">wrap-reverse</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">gap</span>
+        <input class="pg-gap" type="range" min="0" max="32" value="8" />
+        <span class="pg-gap-val">8px</span>
+        <button class="pg-add">Add item</button>
+        <button class="pg-remove">Remove item</button>
+      </div>
+    </div>
+    <div class="pg-stage"></div>
+    <div class="pg-item-panel hidden">
+      <span class="pg-label pg-item-title">Item 1</span>
+      <div class="pg-prop">
+        <span class="pg-label">flex-grow</span>
+        <div class="chip-row" data-prop="flex-grow" data-scope="item">
+          <button class="chip" data-value="0">0</button>
+          <button class="chip" data-value="1">1</button>
+          <button class="chip" data-value="2">2</button>
+          <button class="chip" data-value="3">3</button>
+        </div>
+      </div>
+      <div class="pg-prop">
+        <span class="pg-label">align-self</span>
+        <div class="chip-row" data-prop="align-self" data-scope="item">
+          <button class="chip" data-value="auto">auto</button>
+          <button class="chip" data-value="flex-start">flex-start</button>
+          <button class="chip" data-value="center">center</button>
+          <button class="chip" data-value="flex-end">flex-end</button>
+          <button class="chip" data-value="stretch">stretch</button>
+        </div>
+      </div>
+    </div>
+    <p class="raid-hint">Click an item on the stage to edit its own properties.</p>
+    <pre class="pg-code"></pre>
+  </div>
+</Base>
+
+<script>
+  import { initFlexbox } from '../../scripts/flexbox';
+  document.querySelectorAll<HTMLElement>('.pg-root').forEach(initFlexbox);
+</script>

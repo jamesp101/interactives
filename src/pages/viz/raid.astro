@@ -10,12 +10,12 @@ import Base from '../../layouts/Base.astro';
     array survives.
   </p>
   <div class="raid-root">
-    <div class="raid-chips" role="group" aria-label="RAID level">
-      <button class="raid-chip" data-level="raid0">RAID 0</button>
-      <button class="raid-chip" data-level="raid1">RAID 1</button>
-      <button class="raid-chip active" data-level="raid5">RAID 5</button>
-      <button class="raid-chip" data-level="raid6">RAID 6</button>
-      <button class="raid-chip" data-level="raid10">RAID 10</button>
+    <div class="chip-row raid-chips" role="group" aria-label="RAID level">
+      <button class="chip" data-level="raid0">RAID 0</button>
+      <button class="chip" data-level="raid1">RAID 1</button>
+      <button class="chip active" data-level="raid5">RAID 5</button>
+      <button class="chip" data-level="raid6">RAID 6</button>
+      <button class="chip" data-level="raid10">RAID 10</button>
     </div>
     <div class="viz-controls">
       <label>
