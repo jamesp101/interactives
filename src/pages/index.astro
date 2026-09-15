@@ -33,7 +33,8 @@ interface Card {
   href: string;
   title: string;
   desc: string;
-  badge: string;
+  kind: string;
+  metas: string[];
   icon: string;
   tint: string;
 }
@@ -42,7 +43,8 @@ const algoCard = (a: (typeof algorithms)[number], tint: string): Card => ({
   href: `${base}viz/${a.slug}/`,
   title: a.title,
   desc: a.description,
-  badge: `avg ${a.complexity.average}`,
+  kind: a.category,
+  metas: [`avg ${a.complexity.average}`, `space ${a.complexity.space}`],
   icon: ICONS[a.slug]!,
   tint,
 });
@@ -67,7 +69,8 @@ const sections: { name: string; cards: Card[] }[] = [
         href: `${base}viz/raid/`,
         title: 'RAID Levels',
         desc: 'How RAID 0, 1, 5, 6, and 10 lay data, mirrors, and parity across disks — and what happens when drives fail.',
-        badge: 'interactive',
+        kind: 'storage',
+        metas: ['5 levels', 'failure sim'],
         icon: ICONS.raid!,
         tint: '#9b5de5',
       },
@@ -80,7 +83,8 @@ const sections: { name: string; cards: Card[] }[] = [
         href: `${base}viz/flexbox/`,
         title: 'Flexbox Playground',
         desc: 'Toggle direction, justification, alignment, wrap, and gap on a live flex container; give items their own grow and align-self.',
-        badge: 'playground',
+        kind: 'playground',
+        metas: ['7 properties'],
         icon: ICONS.flexbox!,
         tint: '#3ddc84',
       },
@@ -88,7 +92,8 @@ const sections: { name: string; cards: Card[] }[] = [
         href: `${base}viz/grid/`,
         title: 'Grid Playground',
         desc: 'Shape a live CSS grid — track counts, gaps, item alignment, and column/row spans — with the generated CSS alongside.',
-        badge: 'playground',
+        kind: 'playground',
+        metas: ['6 properties'],
         icon: ICONS.grid!,
         tint: '#3ddc84',
       },
@@ -101,7 +106,8 @@ const sections: { name: string; cards: Card[] }[] = [
         href: `${base}viz/hooks/`,
         title: 'React Hooks',
         desc: 'How useState, useEffect, useRef, and useMemo really work: hook slots, re-renders, dependency arrays, and cleanups in a live simulated runtime.',
-        badge: 'interactive',
+        kind: 'runtime',
+        metas: ['4 hooks', 'slot inspector'],
         icon: ICONS.hooks!,
         tint: '#61dafb',
       },
@@ -120,19 +126,45 @@ const sections: { name: string; cards: Card[] }[] = [
   {
     sections.map((section) => (
       <>
-        <h2>{section.name}</h2>
-        <div class="card-grid">
-          {section.cards.map((c) => (
-            <a class="card" href={c.href} style={`--tint: ${c.tint}`}>
-              <span class="card-icon" set:html={c.icon} />
-              <span class="card-body">
-                <h3>{c.title}</h3>
-                <p>{c.desc}</p>
-                <span class="badge">{c.badge}</span>
-              </span>
-            </a>
-          ))}
+        <div class="section-head">
+          <h2>{section.name}</h2>
+          <span class="section-count">{section.cards.length}</span>
         </div>
+        <ul class="card-grid">
+          {section.cards.map((c) => (
+            <li>
+              <a class="card" href={c.href} style={`--tint: ${c.tint}`}>
+                <span class="card-head">
+                  <span class="card-icon" set:html={c.icon} />
+                  <h3>{c.title}</h3>
+                </span>
+                <p>{c.desc}</p>
+                <span class="card-foot">
+                  <span class="card-metas">
+                    <span class="meta kind">{c.kind}</span>
+                    {c.metas.map((m) => (
+                      <span class="meta">{m}</span>
+                    ))}
+                  </span>
+                  <svg
+                    class="card-go"
+                    aria-hidden="true"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </>
     ))
   }
