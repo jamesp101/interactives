@@ -25,6 +25,8 @@ const ICONS: Record<string, string> = {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="5" height="8" rx="1"/><rect x="10.5" y="6" width="4" height="12" rx="1"/><rect x="17" y="9" width="4" height="6" rx="1"/></svg>',
   grid:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>',
+  hooks:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(120 12 12)"/></svg>',
 };
 
 interface Card {
@@ -89,6 +91,19 @@ const sections: { name: string; cards: Card[] }[] = [
         badge: 'playground',
         icon: ICONS.grid!,
         tint: '#3ddc84',
+      },
+    ],
+  },
+  {
+    name: 'React',
+    cards: [
+      {
+        href: `${base}viz/hooks/`,
+        title: 'React Hooks',
+        desc: 'How useState, useEffect, useRef, and useMemo really work: hook slots, re-renders, dependency arrays, and cleanups in a live simulated runtime.',
+        badge: 'interactive',
+        icon: ICONS.hooks!,
+        tint: '#61dafb',
       },
     ],
   },

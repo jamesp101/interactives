@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="React Hooks — Interactive Algorithms">
+  <h1>React Hooks</h1>
+  <p class="desc">
+    React stores hooks in a slot array on the component, filled in call order on every render —
+    which is why hooks can't be conditional. This simulated runtime runs a real Counter component:
+    watch state slots, effect scheduling, dependency comparison, cleanups, refs, and memoization as
+    you interact with it.
+  </p>
+  <div class="hx-root">
+    <div class="viz-controls">
+      <span class="pg-label">useEffect deps</span>
+      <div class="chip-row">
+        <button class="chip" data-mode="empty">[]</button>
+        <button class="chip active" data-mode="count">[count]</button>
+        <button class="chip" data-mode="none">(no deps)</button>
+      </div>
+      <button class="hx-mount">Unmount component</button>
+    </div>
+    <div class="hx-cols">
+      <div class="hx-pane">
+        <span class="pg-label">rendered component</span>
+        <div class="hx-window">
+          <div class="hx-titlebar">document.title: <span class="hx-title">—</span></div>
+          <div class="hx-body">
+            <p>count: <strong class="hx-count">0</strong> · doubled (memo): <strong class="hx-doubled">0</strong></p>
+            <p>renders (ref): <strong class="hx-renders">0</strong></p>
+            <div class="hx-actions">
+              <button class="hx-inc">setCount(count + 1)</button>
+              <button class="hx-dark">setDark(true)</button>
+              <button class="hx-ref">ref.current++ (no render)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hx-pane">
+        <span class="pg-label">hook slots (component fiber)</span>
+        <table class="hx-slots">
+          <thead><tr><th>#</th><th>hook</th><th>stored</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <span class="pg-label">event log</span>
+    <div class="hx-log"></div>
+    <pre class="pg-code hx-src"></pre>
+  </div>
+</Base>
+
+<script>
+  import { initHooks } from '../../scripts/hooks';
+  document.querySelectorAll<HTMLElement>('.hx-root').forEach(initHooks);
+</script>
