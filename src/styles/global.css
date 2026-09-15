@@ -212,3 +212,145 @@ table.complexity td {
   margin-right: 0.35rem;
   background: var(--swatch);
 }
+
+/* RAID interactive */
+.viz-controls select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.raid-status {
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0.25rem;
+  border: 1px solid var(--border);
+}
+
+.raid-status.healthy {
+  border-color: var(--sorted);
+  color: var(--sorted);
+}
+
+.raid-status.degraded {
+  border-color: var(--compare);
+  color: var(--compare);
+}
+
+.raid-status.failed {
+  border-color: var(--hot);
+  color: var(--hot);
+}
+
+.raid-meta {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin: 0.25rem 0 0;
+}
+
+.raid-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.raid-disk {
+  flex: 1;
+  min-width: 74px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+
+.raid-disk.failed {
+  border-color: var(--hot);
+  background: #e4572e14;
+}
+
+.raid-disk-head {
+  width: 100%;
+  background: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.2rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.raid-disk-head:hover {
+  border-color: var(--accent);
+}
+
+.raid-disk.failed .raid-disk-head {
+  color: var(--hot);
+  border-color: var(--hot);
+}
+
+.raid-cell {
+  margin-top: 0.45rem;
+  border-radius: 6px;
+  padding: 0.3rem 0;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+.raid-cell.kind-data {
+  background: #5b8dee2e;
+  border: 1px solid var(--accent);
+}
+
+.raid-cell.kind-mirror {
+  background: #5b8dee14;
+  border: 1px dashed var(--accent);
+  color: var(--text-dim);
+}
+
+.raid-cell.kind-p {
+  background: #f2b1342e;
+  border: 1px solid var(--compare);
+}
+
+.raid-cell.kind-q {
+  background: #9b5de52e;
+  border: 1px solid var(--pivot);
+}
+
+.raid-cell.rebuild {
+  background: #3ddc8414;
+  border: 1px dashed var(--sorted);
+  color: var(--sorted);
+}
+
+.raid-cell.lost {
+  background: #e4572e2e;
+  border: 1px solid var(--hot);
+  color: var(--hot);
+  text-decoration: line-through;
+}
+
+.raid-cell.new {
+  animation: raid-flash 0.7s ease-out;
+}
+
+@keyframes raid-flash {
+  from {
+    filter: brightness(2);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+.raid-hint {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="RAID Levels — Interactive Algorithms">
+  <h1>RAID Levels</h1>
+  <p class="desc">
+    RAID combines several physical disks into one logical volume, trading capacity for speed and
+    redundancy. Pick a level, write stripes, then click disks to fail them and see whether the
+    array survives.
+  </p>
+  <div class="raid-root">
+    <div class="viz-controls">
+      <label>
+        Level
+        <select class="raid-level">
+          <option value="raid0">RAID 0 — striping</option>
+          <option value="raid1">RAID 1 — mirroring</option>
+          <option value="raid5" selected>RAID 5 — parity</option>
+          <option value="raid6">RAID 6 — dual parity</option>
+          <option value="raid10">RAID 10 — mirrored stripes</option>
+        </select>
+      </label>
+      <label>
+        Disks
+        <input class="raid-disks-input" type="range" min="3" max="8" value="4" />
+        <span class="raid-disks-val">4</span>
+      </label>
+      <button class="raid-write">Write stripe</button>
+      <button class="raid-rebuild">Rebuild</button>
+      <button class="raid-reset">Reset</button>
+    </div>
+    <p class="desc raid-blurb"></p>
+    <div class="raid-status healthy"></div>
+    <p class="raid-meta"></p>
+    <div class="raid-grid"></div>
+    <div class="legend">
+      <span style="--swatch: #5b8dee">data block</span>
+      <span style="--swatch: #5b8dee80">mirror copy</span>
+      <span style="--swatch: #f2b134">parity p</span>
+      <span style="--swatch: #9b5de5">parity q</span>
+      <span style="--swatch: #3ddc84">rebuildable</span>
+      <span style="--swatch: #e4572e">lost</span>
+    </div>
+    <p class="raid-hint">Click a disk header to fail or restore that disk.</p>
+  </div>
+</Base>
+
+<script>
+  import { initRaid } from '../../scripts/raid';
+  document.querySelectorAll<HTMLElement>('.raid-root').forEach(initRaid);
+</script>
