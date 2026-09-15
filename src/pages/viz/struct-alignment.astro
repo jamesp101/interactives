@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/struct-alignment.css';
+---
+
+<Base title="Struct Alignment & Padding — Interactive Algorithms">
+  <h1>Struct Alignment &amp; Padding</h1>
+  <p class="desc">
+    A C compiler may not reorder struct members, so it inserts padding to keep each one on an address
+    that is a multiple of its alignment. Build a struct and watch the wasted bytes appear — then sort
+    the members by descending alignment and watch them disappear. Model: x86-64 System V ABI (LP64).
+  </p>
+  <div class="sa-root">
+    <p class="pg-label">add field</p>
+    <div class="chip-row sa-types" role="group" aria-label="Add a field of this type">
+      <button class="chip" type="button" data-type="char">char</button>
+      <button class="chip" type="button" data-type="bool">bool</button>
+      <button class="chip" type="button" data-type="short">short</button>
+      <button class="chip" type="button" data-type="int">int</button>
+      <button class="chip" type="button" data-type="float">float</button>
+      <button class="chip" type="button" data-type="long">long</button>
+      <button class="chip" type="button" data-type="double">double</button>
+      <button class="chip" type="button" data-type="void*">void*</button>
+    </div>
+
+    <p class="pg-label">packing</p>
+    <div class="chip-row sa-modes" role="group" aria-label="Packing mode">
+      <button class="chip active" type="button" data-mode="default">default</button>
+      <button class="chip" type="button" data-mode="packed">#pragma pack(1)</button>
+    </div>
+
+    <div class="viz-controls sa-controls">
+      <button class="sa-reset" type="button">Reset example</button>
+      <button class="sa-clear" type="button">Clear fields</button>
+    </div>
+
+    <p class="pg-label">members (declaration order)</p>
+    <div class="sa-table-wrap">
+      <table class="sa-table">
+        <thead>
+          <tr>
+            <th scope="col">name</th>
+            <th scope="col">type</th>
+            <th scope="col">offset</th>
+            <th scope="col">size</th>
+            <th scope="col">align</th>
+            <th scope="col">pad before</th>
+            <th scope="col"><span class="sa-sr">actions</span></th>
+          </tr>
+        </thead>
+        <tbody class="sa-fields"></tbody>
+      </table>
+    </div>
+    <p class="raid-hint sa-empty" hidden>
+      The struct is empty. Add a member with the chips above.
+    </p>
+
+    <div class="sa-stats"></div>
+
+    <p class="pg-label">byte map — one cell per byte, 8 bytes per row</p>
+    <div class="sa-grid"></div>
+    <div class="legend">
+      <span style="--swatch: #5b8dee">member bytes (one colour per field)</span>
+      <span style="--swatch: #e4572e">internal padding</span>
+      <span style="--swatch: #f2b134">tail padding (striped)</span>
+    </div>
+    <p class="raid-hint sa-hint"></p>
+    <p class="raid-hint">
+      Hover any cell for its offset and owning member. Row labels are byte offsets from the start of
+      the struct.
+    </p>
+
+    <div class="sa-opt">
+      <p class="pg-label">optimal ordering (members sorted by descending alignment)</p>
+      <p class="sa-opt-line"></p>
+      <p class="sa-opt-note"></p>
+      <button class="sa-apply" type="button" hidden>Apply optimal order</button>
+    </div>
+
+    <pre class="pg-code sa-code"></pre>
+
+    <table class="complexity">
+      <thead>
+        <tr>
+          <th>type</th>
+          <th>sizeof</th>
+          <th>_Alignof</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>char</td><td>1</td><td>1</td></tr>
+        <tr><td>bool</td><td>1</td><td>1</td></tr>
+        <tr><td>short</td><td>2</td><td>2</td></tr>
+        <tr><td>int</td><td>4</td><td>4</td></tr>
+        <tr><td>float</td><td>4</td><td>4</td></tr>
+        <tr><td>long</td><td>8</td><td>8</td></tr>
+        <tr><td>double</td><td>8</td><td>8</td></tr>
+        <tr><td>void*</td><td>8</td><td>8</td></tr>
+      </tbody>
+    </table>
+    <p class="raid-hint">
+      Sizes above are x86-64 System V (LP64). On 32-bit x86 or Windows LLP64 a <code>long</code> is 4
+      bytes, and 32-bit Linux aligns <code>double</code> to 4 — the same struct can have a different
+      sizeof on each ABI.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { initStructAlignment } from '../../scripts/struct-alignment';
+  document.querySelectorAll<HTMLElement>('.sa-root').forEach(initStructAlignment);
+</script>

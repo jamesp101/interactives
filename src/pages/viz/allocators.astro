@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/allocators.css';
+---
+
+<Base title="Memory Allocators — Interactive Algorithms">
+  <h1>Memory Allocators</h1>
+  <p class="desc">
+    One 512-byte arena, four ways to hand it out. Allocate blocks, click them to free, and watch how
+    each strategy trades speed against fragmentation — the reason general-purpose malloc is slower
+    than a bump pointer, and why game engines and kernels ship their own allocators.
+  </p>
+  <div class="al-root">
+    <div class="chip-row al-strats" role="group" aria-label="allocator strategy">
+      <button class="chip active" data-strategy="bump">bump / arena</button>
+      <button class="chip" data-strategy="freelist">free list</button>
+      <button class="chip" data-strategy="pool">pool / slab</button>
+      <button class="chip" data-strategy="stack">stack</button>
+    </div>
+    <p class="desc al-blurb"></p>
+    <div class="viz-controls al-fitrow al-off">
+      <span class="pg-label">fit policy</span>
+      <div class="chip-row" role="group" aria-label="fit policy">
+        <button class="chip active" data-fit="first">first fit</button>
+        <button class="chip" data-fit="best">best fit</button>
+      </div>
+    </div>
+    <div class="viz-controls">
+      <span class="pg-label">request size</span>
+      <div class="chip-row al-sizes" role="group" aria-label="allocation size">
+        <button class="chip" data-size="16">16 B</button>
+        <button class="chip" data-size="32">32 B</button>
+        <button class="chip active" data-size="64">64 B</button>
+        <button class="chip" data-size="128">128 B</button>
+      </div>
+      <button class="al-alloc ctl-play">Alloc</button>
+      <button class="al-mark al-off">mark</button>
+      <button class="al-release al-off">release to mark</button>
+      <button class="al-demo">fragment the arena</button>
+      <button class="al-reset">Reset</button>
+    </div>
+    <div class="al-barwrap">
+      <div class="al-bar" aria-label="arena, 512 bytes"></div>
+    </div>
+    <div class="al-ruler">
+      <span>0x000</span>
+      <span>0x080</span>
+      <span>0x100</span>
+      <span>0x180</span>
+      <span>0x200</span>
+    </div>
+    <p class="al-msg info"></p>
+    <div class="al-stats"></div>
+    <div class="legend">
+      <span style="--swatch: #5b8dee">allocated block</span>
+      <span style="--swatch: #2a2f3a">free gap</span>
+      <span style="--swatch: #9b5de5">8 B block header</span>
+      <span style="--swatch: #f2b134">internal waste</span>
+      <span style="--swatch: #3ddc84">stack mark</span>
+    </div>
+    <p class="raid-hint">
+      Click any allocated block in the bar to free it — each strategy answers that click by its own
+      rules. Sizes are exact: no alignment rounding, so every byte you see is accounted for.
+    </p>
+    <p class="raid-hint al-hint"></p>
+    <pre class="pg-code al-log"></pre>
+
+    <h2>Strategy comparison</h2>
+    <table class="complexity">
+      <thead>
+        <tr>
+          <th>strategy</th>
+          <th>alloc cost</th>
+          <th>free cost</th>
+          <th>fragmentation</th>
+          <th>typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>bump / arena</td>
+          <td>O(1) pointer add</td>
+          <td>not supported; reset is O(1) for the whole arena</td>
+          <td>none, but memory is only reclaimed all at once</td>
+          <td>per-frame and per-request scratch memory, compilers, parsers</td>
+        </tr>
+        <tr>
+          <td>free list</td>
+          <td>O(n) scan of the block list</td>
+          <td>O(1) mark free, plus O(1) coalescing with neighbours</td>
+          <td>external: free bytes scatter into unusable gaps</td>
+          <td>general-purpose malloc / free</td>
+        </tr>
+        <tr>
+          <td>pool / slab</td>
+          <td>O(1) take a free slot</td>
+          <td>O(1) return the slot</td>
+          <td>no external fragmentation; internal waste of slot minus request</td>
+          <td>many same-sized objects: list nodes, packets, kernel structs</td>
+        </tr>
+        <tr>
+          <td>stack</td>
+          <td>O(1) pointer add</td>
+          <td>O(1), but LIFO order only</td>
+          <td>none, at the cost of forcing reverse-order lifetimes</td>
+          <td>nested scopes, recursion scratch, mark and release arenas</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="raid-hint">
+      External fragmentation is free memory you cannot use because it is split into pieces too small
+      for the request: <code>(1 - largest free gap / total free) * 100</code>. Internal fragmentation
+      is memory you handed out but the caller cannot use, such as the 16 unused bytes when a 16-byte
+      object takes a 32-byte pool slot.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { initAllocators } from '../../scripts/allocators';
+  document.querySelectorAll<HTMLElement>('.al-root').forEach(initAllocators);
+</script>

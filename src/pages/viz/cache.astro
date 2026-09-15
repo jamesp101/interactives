@@ -1,0 +1,175 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/cache.css';
+---
+
+<Base title="Cache Hits &amp; Misses — Interactive Algorithms">
+  <h1>Cache Hits &amp; Misses</h1>
+  <p class="desc">
+    An <code>int32[256]</code> array — 1024 bytes at addresses 0–1023 — walked through a
+    set-associative cache with 64-byte lines (the line size on x86-64 and on Apple silicon). The
+    data never changes size; only the order you touch it does, and that alone decides the hit rate.
+  </p>
+
+  <div class="cx-root">
+    <div class="cx-cfg">
+      <div class="cx-cfg-row">
+        <span class="pg-label cx-cfg-label">Access pattern</span>
+        <div class="chip-row" role="group" aria-label="Access pattern">
+          <button class="chip active" data-pattern="sequential">sequential</button>
+          <button class="chip" data-pattern="stride4">stride 4</button>
+          <button class="chip" data-pattern="stride16">stride 16</button>
+          <button class="chip" data-pattern="random">random</button>
+          <button class="chip" data-pattern="twopass">two passes</button>
+        </div>
+      </div>
+      <div class="cx-cfg-row">
+        <span class="pg-label cx-cfg-label">Sets</span>
+        <div class="chip-row" role="group" aria-label="Number of sets">
+          <button class="chip" data-sets="4">4</button>
+          <button class="chip" data-sets="8">8</button>
+          <button class="chip active" data-sets="16">16</button>
+        </div>
+      </div>
+      <div class="cx-cfg-row">
+        <span class="pg-label cx-cfg-label">Ways</span>
+        <div class="chip-row" role="group" aria-label="Associativity">
+          <button class="chip active" data-ways="1">1 (direct-mapped)</button>
+          <button class="chip" data-ways="2">2</button>
+          <button class="chip" data-ways="4">4</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="viz-controls">
+      <button class="ctl-play cx-play">Play</button>
+      <button class="cx-step">Step</button>
+      <button class="cx-reset">Reset</button>
+      <label>
+        Speed
+        <input class="cx-speed" type="range" min="1" max="120" value="15" aria-label="Accesses per second" />
+        <span class="cx-speed-val"></span>
+      </label>
+    </div>
+
+    <p class="cx-capacity"></p>
+    <p class="cx-blurb"></p>
+
+    <div class="cx-stats"></div>
+    <pre class="pg-code cx-explain"></pre>
+
+    <div class="cx-panels">
+      <section class="cx-panel cx-panel-mem">
+        <span class="pg-label cx-panel-head">
+          Memory — <code>int32[256]</code>, 16 ints per 64-byte line
+        </span>
+        <div class="cx-mem"></div>
+        <p class="raid-hint">
+          Each small square is one <code>int32</code>. Squares are grouped into 64-byte lines with a
+          gap; a group is tinted when that line is currently resident in the cache, and the square
+          being accessed right now is outlined in blue. A cache never fetches a single int — it
+          always pulls the whole 64-byte line that int sits in.
+        </p>
+      </section>
+
+      <section class="cx-panel cx-panel-cache">
+        <span class="pg-label cx-panel-head">Cache — <span class="cx-cache-label"></span></span>
+        <div class="cx-cache-scroll">
+          <div class="cx-cache"></div>
+        </div>
+        <p class="raid-hint">
+          Rows are sets, columns are ways. A byte address <code>a</code> decodes as
+          <code>block = a / 64</code>, <code>set = block % sets</code>,
+          <code>tag = block / sets</code> (integer division). Replacement is true LRU inside the
+          set: the way whose last-use counter is oldest is the one evicted.
+        </p>
+      </section>
+    </div>
+
+    <div class="legend">
+      <span style="--swatch: #5b8dee">current access</span>
+      <span style="--swatch: #5b8dee40">line resident in cache</span>
+      <span style="--swatch: #3ddc84">way just hit</span>
+      <span style="--swatch: #e4572e">way just filled / evicted</span>
+    </div>
+
+    <p class="raid-hint cx-waste"></p>
+
+    <h2>Why the pattern matters more than the size</h2>
+    <p class="desc">
+      All five patterns read the same 1024-byte array. A 64-byte line holds 16 <code>int32</code>s,
+      so the best a cache can do on a cold array is one miss per line — 16 misses. The numbers below
+      are what this page actually simulates; the last column shows the same walk on a cache four
+      times too small (4 sets × 1 way = 256 B).
+    </p>
+    <div class="cx-table-scroll">
+      <table class="complexity">
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>Accesses</th>
+            <th>Lines touched</th>
+            <th>Misses (1024 B cache)</th>
+            <th>Hit rate (1024 B)</th>
+            <th>Hit rate (256 B)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>sequential</td>
+            <td>256</td>
+            <td>16</td>
+            <td>16</td>
+            <td>93.75%</td>
+            <td>93.75%</td>
+          </tr>
+          <tr>
+            <td>stride 4</td>
+            <td>64</td>
+            <td>16</td>
+            <td>16</td>
+            <td>75%</td>
+            <td>75%</td>
+          </tr>
+          <tr>
+            <td>stride 16</td>
+            <td>16</td>
+            <td>16</td>
+            <td>16</td>
+            <td>0%</td>
+            <td>0%</td>
+          </tr>
+          <tr>
+            <td>random</td>
+            <td>256</td>
+            <td>16</td>
+            <td>16</td>
+            <td>93.75%</td>
+            <td>27.34%</td>
+          </tr>
+          <tr>
+            <td>two passes</td>
+            <td>512</td>
+            <td>16</td>
+            <td>16</td>
+            <td>96.88%</td>
+            <td>93.75%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="desc">
+      Read it as three lessons. <strong>Stride 16 is the disaster case:</strong> 16 ints is exactly
+      64 bytes, so every access opens a new line and 60 of every 64 bytes fetched are thrown away —
+      0% hits no matter how big the cache is. <strong>Sequential is free reuse:</strong> one miss
+      pays for the next 15 hits. <strong>Capacity only shows up on re-reads:</strong> sequential
+      never revisits a line, so shrinking the cache to 256 B costs it nothing, while the random walk
+      collapses from 93.75% to 27.34% and the second pass stops being free.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { initCache } from '../../scripts/cache';
+  document.querySelectorAll<HTMLElement>('.cx-root').forEach(initCache);
+</script>

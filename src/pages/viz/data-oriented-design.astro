@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/data-oriented-design.css';
+---
+
+<Base title="Data-Oriented Design — Interactive Algorithms">
+  <h1>Data-Oriented Design</h1>
+  <p class="desc">
+    The same 8-field particle stored two ways — array of structs (AoS) and struct of arrays (SoA) —
+    with every 64-byte cache line a loop has to pull in. Pick a task and watch how much of the
+    memory traffic is actually used.
+  </p>
+  <div class="dod-root">
+    <div class="viz-controls">
+      <span class="pg-label">task</span>
+      <div class="chip-row dod-task-chips" role="group" aria-label="Loop task">
+        <button class="chip active" type="button" data-task="sum x" aria-pressed="true">sum x</button>
+        <button class="chip" type="button" data-task="update positions" aria-pressed="false">
+          update positions
+        </button>
+        <button class="chip" type="button" data-task="read ids" aria-pressed="false">read ids</button>
+      </div>
+    </div>
+    <div class="viz-controls">
+      <span class="pg-label">particles</span>
+      <div class="chip-row dod-count-chips" role="group" aria-label="Particle count">
+        <button class="chip" type="button" data-count="8" aria-pressed="false">8</button>
+        <button class="chip active" type="button" data-count="16" aria-pressed="true">16</button>
+        <button class="chip" type="button" data-count="32" aria-pressed="false">32</button>
+      </div>
+    </div>
+
+    <p class="dod-task-note"></p>
+    <p class="dod-verdict" role="status"></p>
+
+    <div class="dod-panels">
+      <section class="dod-panel" data-layout="aos">
+        <header class="dod-panel-head">
+          <h2 class="dod-panel-title">AoS — array of structs</h2>
+          <span class="meta dod-panel-util"></span>
+        </header>
+        <p class="pg-label dod-panel-sub"></p>
+        <div class="dod-bar" aria-hidden="true">
+          <div class="dod-bar-useful"></div>
+          <div class="dod-bar-wasted"></div>
+        </div>
+        <p class="dod-stats"></p>
+        <div class="dod-map" tabindex="0" role="group" aria-label="AoS memory map">
+          <div class="dod-lines"></div>
+        </div>
+      </section>
+
+      <section class="dod-panel" data-layout="soa">
+        <header class="dod-panel-head">
+          <h2 class="dod-panel-title">SoA — struct of arrays</h2>
+          <span class="meta dod-panel-util"></span>
+        </header>
+        <p class="pg-label dod-panel-sub"></p>
+        <div class="dod-bar" aria-hidden="true">
+          <div class="dod-bar-useful"></div>
+          <div class="dod-bar-wasted"></div>
+        </div>
+        <p class="dod-stats"></p>
+        <div class="dod-map" tabindex="0" role="group" aria-label="SoA memory map">
+          <div class="dod-lines"></div>
+        </div>
+      </section>
+    </div>
+
+    <p class="dod-readout" role="status"></p>
+    <div class="legend">
+      <span style="--swatch: #5b8dee">position x, y, z</span>
+      <span style="--swatch: #9b5de5">velocity vx, vy, vz</span>
+      <span style="--swatch: #3ddc84">id</span>
+      <span style="--swatch: #f2b134">flags</span>
+      <span style="--swatch: #e4572e">wasted — loaded but unused</span>
+      <span style="--swatch: #2a2f3a">line never loaded</span>
+    </div>
+    <p class="raid-hint">
+      Each row is one 64-byte cache line; each cell is one byte, striped along its bottom edge with
+      the color of the field it belongs to. A byte is filled with that field color when the loop
+      reads or writes it, filled orange when it merely rides along inside a line the loop forced
+      into cache, and left dim when its line is never loaded at all. Useful bytes divided by loaded
+      bytes is the utilization — that is where every percentage on this page comes from.
+    </p>
+
+    <div class="dod-table-wrap">
+      <table class="complexity dod-table">
+        <thead>
+          <tr>
+            <th>task</th>
+            <th>fields touched</th>
+            <th>AoS lines</th>
+            <th>AoS util</th>
+            <th>SoA lines</th>
+            <th>SoA util</th>
+            <th>traffic saved</th>
+          </tr>
+        </thead>
+        <tbody class="dod-tbody"></tbody>
+      </table>
+    </div>
+
+    <pre class="pg-code dod-code"></pre>
+
+    <p class="desc dod-lesson"></p>
+  </div>
+</Base>
+
+<script>
+  import { initDod } from '../../scripts/data-oriented-design';
+  document.querySelectorAll<HTMLElement>('.dod-root').forEach(initDod);
+</script>

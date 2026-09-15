@@ -1,0 +1,137 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/pointers.css';
+---
+
+<Base title="Pointers — Interactive Algorithms">
+  <h1>Pointers</h1>
+  <p class="desc">
+    A pointer is just an integer that happens to be an address — and every confusing thing about
+    pointers becomes obvious once you can see the address it holds. Walk an eleven-line C program
+    one line at a time and watch the bytes, the arrows, the scaled arithmetic, and the segfault.
+  </p>
+
+  <div class="ptr-root">
+    <p class="ptr-model">
+      <strong>Model:</strong> x86-64 System V / LP64 — <code>int</code> is 4 bytes, every pointer is
+      8 bytes, and objects are naturally aligned, so the frame really does contain padding. Addresses
+      are illustrative and ascend in declaration order (a real x86-64 frame grows <em>downward</em>),
+      but object sizes, alignment gaps, little-endian byte order and pointer-arithmetic scaling are
+      exact.
+    </p>
+
+    <div class="viz-controls">
+      <button class="ptr-back">◀ Step back</button>
+      <button class="ptr-fwd">Step forward ▶</button>
+      <button class="ctl-play ptr-play">Play</button>
+      <button class="ptr-reset">Reset</button>
+      <span class="meta ptr-progress">line 0 / 11</span>
+      <span class="meta ptr-status">next: int x = 42;</span>
+    </div>
+
+    <div class="viz-controls">
+      <span class="pg-label">play speed</span>
+      <div class="chip-row">
+        <button class="chip" data-speed="1500">slow</button>
+        <button class="chip active" data-speed="900">normal</button>
+        <button class="chip" data-speed="400">fast</button>
+      </div>
+    </div>
+
+    <div class="ptr-cols">
+      <div class="ptr-pane">
+        <span class="pg-label">program</span>
+        <ol class="ptr-prog"></ol>
+        <p class="raid-hint">
+          Executed lines are dimmed, the highlighted line is the one whose effect you see in memory,
+          and <span class="ptr-key-next">▸</span> marks the line that runs next. Click any line to
+          jump straight to the state after it.
+        </p>
+      </div>
+
+      <div class="ptr-pane">
+        <span class="pg-label">memory window — stack frame</span>
+        <div class="ptr-mem">
+          <svg class="ptr-svg" aria-hidden="true"></svg>
+        </div>
+        <p class="raid-hint">
+          Each row is one object: its address, its declaration, its raw bytes (least significant
+          first) and its value. A pointer's value <em>is</em> the arrow — nothing else is stored.
+        </p>
+      </div>
+    </div>
+
+    <div class="ptr-panel">
+      <span class="pg-label ptr-note-label">before the first line</span>
+      <p class="ptr-note"></p>
+    </div>
+
+    <div class="legend">
+      <span style="--swatch: #5b8dee">int * → its pointee</span>
+      <span style="--swatch: #9b5de5">int ** → a pointer</span>
+      <span style="--swatch: #e4572e">NULL / dangling — invalid to dereference</span>
+      <span style="--swatch: #f2b134">slot written by this line</span>
+      <span style="--swatch: #3ddc84">initialised object</span>
+    </div>
+
+    <h2>Why <code>q++</code> moved 4 bytes</h2>
+    <p class="ptr-prose">
+      Pointer arithmetic counts <em>elements</em>, not bytes: <code>p + n</code> compiles to
+      <code>p + n * sizeof(*p)</code>. That single rule is why <code>q++</code> landed on
+      <code>arr[1]</code> at <code>0x1014</code> rather than on byte 1 of <code>arr[0]</code>, and
+      why the same <code>++</code> moves a different distance for every pointee type.
+    </p>
+    <div class="ptr-tablewrap">
+      <table class="complexity">
+        <thead>
+          <tr><th>pointer type</th><th>sizeof(pointee)</th><th><code>ptr++</code> advances</th><th><code>ptr + 3</code> advances</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>char *</td><td>1</td><td>+1 byte</td><td>+3 bytes</td></tr>
+          <tr><td>int *</td><td>4</td><td>+4 bytes</td><td>+12 bytes</td></tr>
+          <tr><td>double *</td><td>8</td><td>+8 bytes</td><td>+24 bytes</td></tr>
+          <tr><td>int **</td><td>8</td><td>+8 bytes</td><td>+24 bytes</td></tr>
+          <tr><td>{'struct { int a; char b; } *'}</td><td>8 (padded)</td><td>+8 bytes</td><td>+24 bytes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ptr-prose">
+      The pointer itself is always 8 bytes on LP64 — the type only changes how far arithmetic steps
+      and how many bytes a dereference touches. <code>void *</code> has no element size at all,
+      which is exactly why C forbids arithmetic on it.
+    </p>
+
+    <h2>Dangling pointer: use after free</h2>
+    <p class="ptr-prose">
+      <code>NULL</code> is the <em>polite</em> invalid pointer: it fails immediately and loudly. A
+      dangling pointer is the dangerous one — it still holds a plausible address, so nothing stops
+      you dereferencing storage whose object no longer exists. Run the four steps in order.
+    </p>
+
+    <div class="ptr-dangle">
+      <div class="viz-controls">
+        <button data-act="alloc" data-phase="1">allocate</button>
+        <button data-act="take" data-phase="2">take pointer</button>
+        <button data-act="free" data-phase="3">free</button>
+        <button data-act="deref" data-phase="4">dereference</button>
+        <button class="ptr-dreset">Reset</button>
+      </div>
+      <div class="ptr-dmem">
+        <svg class="ptr-dsvg" aria-hidden="true"></svg>
+      </div>
+      <pre class="pg-code ptr-dout"></pre>
+      <p class="raid-hint ptr-dnote"></p>
+    </div>
+
+    <p class="ptr-prose">
+      Both failures are the same class of bug: a pointer whose value outlived the thing it named.
+      Setting a pointer to <code>NULL</code> straight after <code>free</code> does not fix the
+      lifetime, but it does convert a silent use-after-free into a crash you can debug.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { initPointers } from '../../scripts/pointers';
+  document.querySelectorAll<HTMLElement>('.ptr-root').forEach(initPointers);
+</script>

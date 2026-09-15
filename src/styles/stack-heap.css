@@ -1,0 +1,403 @@
+/* Stack & Heap — page-local styles, every selector prefixed with .sh- */
+
+.sh-root {
+  margin-top: 1rem;
+}
+
+.sh-depth-row {
+  margin-top: -0.3rem;
+}
+
+.sh-depth-row .pg-label {
+  min-width: 0;
+}
+
+.sh-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+}
+
+.sh-pill-hot {
+  color: var(--hot);
+  border-color: var(--hot);
+}
+
+.sh-error {
+  border: 1px solid var(--hot);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--hot);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+/* ---------------------------------------------------------------- diagram */
+
+.sh-diagram {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 34px 0.7rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sh-diagram .sh-edge {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-width: 0;
+  font-size: 0.72rem;
+}
+
+.sh-region {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sh-region-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.sh-region-name {
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sh-region-note {
+  color: var(--text-dim);
+}
+
+.sh-region-stack .sh-region-name {
+  color: var(--accent);
+}
+
+.sh-region-heap .sh-region-name {
+  color: var(--sorted);
+}
+
+/* -------------------------------------------------------------- stack side */
+
+.sh-frames {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sh-frame {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+}
+
+.sh-frame.rec {
+  border-left-color: var(--pivot);
+}
+
+.sh-frame.top {
+  border-color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+.sh-frame.rec.top {
+  border-color: var(--pivot);
+  border-left-color: var(--pivot);
+}
+
+.sh-frame-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+.sh-fn {
+  color: var(--text);
+}
+
+.sh-badge {
+  font-size: 0.66rem;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 0.4rem;
+}
+
+.sh-badge-rsp {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.sh-fmeta {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.sh-locals {
+  margin-top: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sh-local {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  border-top: 1px dashed var(--border);
+  padding-top: 0.15rem;
+}
+
+.sh-local.ptr {
+  color: var(--text);
+}
+
+.sh-lname {
+  flex: 1 1 7rem;
+  min-width: 0;
+}
+
+.sh-local.ptr .sh-lname {
+  color: var(--accent);
+}
+
+.sh-laddr,
+.sh-lsize {
+  color: var(--text-dim);
+}
+
+.sh-lval {
+  color: var(--accent);
+}
+
+.sh-locals-compact {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.sh-elide,
+.sh-empty {
+  display: block;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+}
+
+.sh-stack-free {
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sh-stack-free.exhausted {
+  border-color: var(--hot);
+}
+
+.sh-free-text {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.sh-stack-free.exhausted .sh-free-text {
+  color: var(--hot);
+}
+
+.sh-guard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem;
+  border: 1px solid var(--hot);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--hot);
+}
+
+.sh-gap {
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  padding: 0.35rem;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+}
+
+/* --------------------------------------------------------------- heap side */
+
+.sh-heap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-height: 14rem;
+}
+
+.sh-blk {
+  /* flex-basis 0 + proportional grow shares the region's spare height by block size;
+     min-height stays `auto` so a wrapped label is never clipped. */
+  flex: 0 0 0;
+  flex-grow: var(--w, 1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+}
+
+.sh-blk.allocated {
+  background: var(--surface);
+  border-left-color: var(--sorted);
+}
+
+.sh-blk.leaked {
+  background: var(--surface);
+  border-color: var(--hot);
+  border-left-color: var(--hot);
+}
+
+.sh-blk.free {
+  border-style: dashed;
+  border-left-style: dashed;
+}
+
+.sh-baddr {
+  color: var(--text);
+}
+
+.sh-blk.free .sh-baddr {
+  color: var(--text-dim);
+}
+
+.sh-bsize {
+  color: var(--text-dim);
+}
+
+.sh-bstate {
+  margin-left: auto;
+  color: var(--text-dim);
+}
+
+.sh-blk.allocated .sh-bstate {
+  color: var(--sorted);
+}
+
+.sh-blk.leaked .sh-baddr,
+.sh-blk.leaked .sh-bstate {
+  color: var(--hot);
+}
+
+/* ------------------------------------------------------------ static bands */
+
+.sh-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+}
+
+.sh-band-name {
+  color: var(--text);
+}
+
+.sh-band-note,
+.sh-band-addr {
+  color: var(--text-dim);
+}
+
+.sh-band-addr {
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------------- pointers */
+
+.sh-arrows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sh-arrows .sh-ptr-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.sh-arrows marker path {
+  fill: var(--accent);
+  stroke: none;
+}
+
+/* -------------------------------------------------------------------- misc */
+
+.sh-root .raid-hint code {
+  font-family: ui-monospace, monospace;
+  color: var(--text);
+}
+
+.sh-log {
+  white-space: pre;
+  line-height: 1.55;
+  max-height: 20rem;
+  overflow: auto;
+}
+
+.sh-root table.complexity {
+  margin-top: 1rem;
+}

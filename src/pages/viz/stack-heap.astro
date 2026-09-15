@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/stack-heap.css';
+---
+
+<Base title="Stack &amp; Heap — Interactive Algorithms">
+  <h1>Stack &amp; Heap</h1>
+  <p class="desc">
+    One process address space, x86-64 System V, high addresses at the top: the stack grows
+    <em>down</em> as you call functions, the heap grows <em>up</em> as you allocate. Call, allocate,
+    free and return to watch frames appear and vanish for free — and watch a heap block turn into a
+    leak the moment the last pointer to it goes out of scope.
+  </p>
+  <div class="sh-root">
+    <div class="viz-controls">
+      <button class="sh-call-main" type="button">call main()</button>
+      <button class="sh-call-process" type="button">call process()</button>
+      <button class="sh-malloc-64" type="button">malloc(64)</button>
+      <button class="sh-malloc-256" type="button">malloc(256)</button>
+      <button class="sh-free" type="button">free(buf)</button>
+      <button class="sh-return" type="button">return</button>
+      <button class="sh-recurse" type="button">recurse fib(n)</button>
+      <button class="sh-reset" type="button">Reset</button>
+    </div>
+
+    <div class="viz-controls sh-depth-row">
+      <span class="pg-label">recursion depth</span>
+      <div class="chip-row" role="group" aria-label="Recursion depth">
+        <button class="chip" type="button" data-depth="3">3</button>
+        <button class="chip active" type="button" data-depth="5">5</button>
+        <button class="chip" type="button" data-depth="8">8</button>
+      </div>
+    </div>
+
+    <div class="sh-stats"></div>
+
+    <div class="sh-error" role="alert" hidden></div>
+
+    <div class="sh-diagram">
+      <div class="sh-edge pg-label">
+        <span>0x7ffd0400</span><span>high addresses — stack base</span>
+      </div>
+
+      <div class="sh-region sh-region-stack">
+        <div class="sh-region-head">
+          <span class="sh-region-name">stack</span>
+          <span class="sh-region-note">1024 B budget · grows down ↓</span>
+        </div>
+        <div class="sh-frames"></div>
+        <div class="sh-stack-free"></div>
+        <div class="sh-guard">
+          <span>guard page</span><span>0x7ffd0000</span>
+        </div>
+      </div>
+
+      <div class="sh-gap">unmapped virtual address space (~128 TiB)</div>
+
+      <div class="sh-region sh-region-heap">
+        <div class="sh-region-head">
+          <span class="sh-region-name">heap</span>
+          <span class="sh-region-note">1024 B region · grows up ↑</span>
+        </div>
+        <div class="sh-heap"></div>
+      </div>
+
+      <div class="sh-band">
+        <span class="sh-band-name">.data / .bss</span>
+        <span class="sh-band-note">globals and statics — sized at link time</span>
+        <span class="sh-band-addr">0x00601000</span>
+      </div>
+      <div class="sh-band">
+        <span class="sh-band-name">.text</span>
+        <span class="sh-band-note">machine code — read-only, never grows</span>
+        <span class="sh-band-addr">0x00400000</span>
+      </div>
+
+      <div class="sh-edge pg-label">
+        <span>0x00400000</span><span>low addresses</span>
+      </div>
+
+      <svg class="sh-arrows" aria-hidden="true"></svg>
+    </div>
+
+    <div class="legend">
+      <span style="--swatch: #5b8dee">stack frame</span>
+      <span style="--swatch: #9b5de5">recursion frame</span>
+      <span style="--swatch: #3ddc84">heap block — allocated</span>
+      <span style="--swatch: #2a2f3a">heap — free gap</span>
+      <span style="--swatch: #e4572e">heap block — leaked</span>
+    </div>
+
+    <p class="raid-hint">
+      Stack allocation is a pointer bump: <code>rsp</code> moves down by the frame size, and every
+      local in that frame is reclaimed automatically by <code>return</code>. Heap allocation is
+      explicit, outlives the frame that made it, and is only reclaimed by <code>free</code> — so the
+      instant the last pointer to a block disappears (here: the frame holding <code>buf</code>
+      returns), the block is <strong>leaked</strong>: still mapped, still charged to your process,
+      permanently unreachable.
+    </p>
+    <p class="raid-hint">
+      The heap uses <strong>first fit</strong>: <code>malloc(n)</code> takes the lowest free gap that
+      is at least <em>n</em> bytes, and <code>free</code> coalesces a block with the free gaps either
+      side of it — four freed 64 B blocks become one 256 B gap that can hold a block none of them
+      could on its own. Frame sizes here count only the named locals; a real System V frame also
+      stores the saved frame pointer and return address and keeps <code>rsp</code> 16-byte aligned.
+    </p>
+
+    <pre class="pg-code sh-log"></pre>
+
+    <table class="complexity">
+      <thead>
+        <tr><th>Property</th><th>Stack</th><th>Heap</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>allocate</td>
+          <td>sub rsp, N — one instruction</td>
+          <td>search free gaps, split, bookkeep</td>
+        </tr>
+        <tr>
+          <td>deallocate</td>
+          <td>automatic — add rsp, N on return</td>
+          <td>explicit free(p), or it leaks</td>
+        </tr>
+        <tr>
+          <td>lifetime</td>
+          <td>ends with the frame</td>
+          <td>until free(p)</td>
+        </tr>
+        <tr>
+          <td>size limit</td>
+          <td>fixed budget — 1 KiB here, 8 MiB typical</td>
+          <td>grows via brk / mmap</td>
+        </tr>
+        <tr>
+          <td>fragmentation</td>
+          <td>none — strictly LIFO</td>
+          <td>yes — gaps between live blocks</td>
+        </tr>
+        <tr>
+          <td>failure</td>
+          <td>overflow past the guard page — SIGSEGV</td>
+          <td>malloc returns NULL, or leaks</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</Base>
+
+<script>
+  import { initStackHeap } from '../../scripts/stack-heap';
+  document.querySelectorAll<HTMLElement>('.sh-root').forEach(initStackHeap);
+</script>

@@ -1,0 +1,283 @@
+/* Cache hits & misses — page-local styles (prefix: cx-) */
+
+.cx-root {
+  margin-top: 1rem;
+}
+
+.cx-cfg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.cx-cfg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.cx-cfg-label {
+  min-width: 7rem;
+}
+
+.cx-speed-val {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  min-width: 3.6rem;
+}
+
+.cx-capacity {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--text);
+  margin: 0.2rem 0 0.35rem;
+}
+
+.cx-blurb {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  max-width: 72ch;
+  margin: 0 0 0.85rem;
+}
+
+/* stats */
+.cx-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cx-stat-progress {
+  color: var(--text);
+}
+
+.cx-stat-hits {
+  color: var(--sorted);
+  border-color: color-mix(in srgb, var(--sorted) 35%, transparent);
+}
+
+.cx-stat-misses {
+  color: var(--hot);
+  border-color: color-mix(in srgb, var(--hot) 35%, transparent);
+}
+
+.cx-stat-compulsory {
+  color: var(--compare);
+  border-color: color-mix(in srgb, var(--compare) 35%, transparent);
+}
+
+.cx-stat-conflict {
+  color: var(--pivot);
+  border-color: color-mix(in srgb, var(--pivot) 35%, transparent);
+}
+
+.cx-stat-hitrate {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.cx-root .cx-explain {
+  margin: 0.7rem 0 1rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 2.4rem;
+  line-height: 1.5;
+}
+
+/* panels */
+.cx-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.cx-panel {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.cx-table-scroll {
+  overflow-x: auto;
+}
+
+.cx-root .cx-panel-head {
+  display: block;
+  min-width: 0;
+  margin-bottom: 0.6rem;
+}
+
+/* memory: 16 line groups of 16 int cells */
+.cx-mem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cx-line {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.cx-line-label {
+  font-family: ui-monospace, monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.cx-line-cells {
+  display: grid;
+  grid-template-columns: repeat(16, 11px);
+  gap: 2px;
+}
+
+.cx-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.cx-line.resident {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.cx-line.resident .cx-line-label {
+  color: var(--accent);
+}
+
+.cx-line.resident .cx-cell {
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.cx-line.cur-line {
+  border-color: var(--accent);
+}
+
+.cx-mem .cx-cell.cur {
+  background: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* cache: sets (rows) x ways (columns) */
+.cx-cache-scroll {
+  overflow-x: auto;
+}
+
+.cx-cache {
+  display: grid;
+  gap: 4px;
+  min-width: 19rem;
+}
+
+.cx-hdr {
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 0.1rem 0.2rem;
+}
+
+.cx-hdr-corner {
+  text-align: right;
+}
+
+.cx-setlbl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.45rem 0 0.1rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  border-right: 1px solid var(--border);
+}
+
+.cx-setlbl.cur {
+  color: var(--accent);
+  border-right-color: var(--accent);
+}
+
+.cx-way {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-height: 2.7rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  font-family: ui-monospace, monospace;
+  color: var(--text-dim);
+}
+
+.cx-way-tag {
+  font-size: 0.7rem;
+}
+
+.cx-way-blk {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+.cx-way.filled {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.cx-way.filled .cx-way-tag {
+  color: var(--accent);
+}
+
+.cx-way.hit {
+  border-style: solid;
+  border-color: var(--sorted);
+  box-shadow: inset 0 0 0 1px var(--sorted);
+}
+
+.cx-way.hit .cx-way-tag {
+  color: var(--sorted);
+}
+
+.cx-way.fill {
+  border-style: solid;
+  border-color: var(--hot);
+  box-shadow: inset 0 0 0 1px var(--hot);
+}
+
+.cx-way.fill .cx-way-tag {
+  color: var(--hot);
+}
+
+.cx-root .cx-waste {
+  max-width: 72ch;
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 460px) {
+  .cx-cfg-label {
+    min-width: 0;
+  }
+
+  .cx-line-cells {
+    grid-template-columns: repeat(16, 9px);
+  }
+
+  .cx-cell {
+    width: 9px;
+    height: 9px;
+  }
+}

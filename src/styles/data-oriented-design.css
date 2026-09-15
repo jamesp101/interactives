@@ -1,0 +1,290 @@
+/* Data-Oriented Design — AoS vs SoA cache-line map. All selectors prefixed .dod-. */
+
+.dod-root {
+  margin-top: 1rem;
+  /* one colour per field: position = accent, velocity = pivot, id, flags.
+     Components within a group are lightened toward the text colour so x/y/z stay distinct. */
+  --dod-f0: var(--accent);
+  --dod-f1: color-mix(in srgb, var(--accent) 70%, var(--text));
+  --dod-f2: color-mix(in srgb, var(--accent) 45%, var(--text));
+  --dod-f3: var(--pivot);
+  --dod-f4: color-mix(in srgb, var(--pivot) 70%, var(--text));
+  --dod-f5: color-mix(in srgb, var(--pivot) 45%, var(--text));
+  --dod-f6: var(--sorted);
+  --dod-f7: var(--compare);
+}
+
+.dod-root .viz-controls {
+  margin-bottom: 0.6rem;
+}
+
+.dod-root .pg-label {
+  min-width: 5rem;
+}
+
+.dod-task-note {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin: 0.8rem 0 0.7rem;
+}
+
+.dod-verdict {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.dod-verdict b {
+  color: var(--sorted);
+}
+
+.dod-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dod-panel {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem 0.85rem;
+}
+
+.dod-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dod-panel-title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.dod-panel-sub {
+  margin: 0.35rem 0 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dod-bar {
+  display: flex;
+  height: 12px;
+  margin: 0.6rem 0 0.45rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dod-bar-useful {
+  background: var(--sorted);
+}
+
+.dod-bar-wasted {
+  background: color-mix(in srgb, var(--hot) 75%, var(--surface));
+}
+
+.dod-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  margin: 0 0 0.7rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+}
+
+.dod-stats b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.dod-map {
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+  border-radius: 6px;
+}
+
+.dod-map:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.dod-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: max-content;
+}
+
+.dod-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dod-line-tag {
+  flex: 0 0 auto;
+  width: 5.2rem;
+  text-align: right;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: color-mix(in srgb, var(--text-dim) 60%, var(--surface));
+}
+
+.dod-line.is-loaded .dod-line-tag {
+  color: var(--text);
+}
+
+.dod-line-bytes {
+  display: flex;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dod-line.is-loaded .dod-line-bytes {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+}
+
+.dod-line-hit {
+  flex: 0 0 auto;
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--text-dim) 55%, var(--surface));
+}
+
+.dod-line.is-loaded .dod-line-hit {
+  color: var(--accent);
+}
+
+.dod-byte {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 20px;
+  background: var(--bg);
+  border-bottom: 4px solid var(--dod-c);
+  --dod-c: var(--accent);
+}
+
+.dod-byte[data-f='0'] {
+  --dod-c: var(--dod-f0);
+}
+
+.dod-byte[data-f='1'] {
+  --dod-c: var(--dod-f1);
+}
+
+.dod-byte[data-f='2'] {
+  --dod-c: var(--dod-f2);
+}
+
+.dod-byte[data-f='3'] {
+  --dod-c: var(--dod-f3);
+}
+
+.dod-byte[data-f='4'] {
+  --dod-c: var(--dod-f4);
+}
+
+.dod-byte[data-f='5'] {
+  --dod-c: var(--dod-f5);
+}
+
+.dod-byte[data-f='6'] {
+  --dod-c: var(--dod-f6);
+}
+
+.dod-byte[data-f='7'] {
+  --dod-c: var(--dod-f7);
+}
+
+/* touched by the task: full field colour */
+.dod-byte[data-s='t'] {
+  background: var(--dod-c);
+}
+
+/* loaded but unused: wasted traffic */
+.dod-byte[data-s='w'] {
+  background: color-mix(in srgb, var(--hot) 38%, var(--surface));
+}
+
+/* line never loaded */
+.dod-byte[data-s='c'] {
+  background: var(--bg);
+  opacity: 0.45;
+}
+
+/* 4-byte field boundary, and the stronger struct (AoS) / array (SoA) boundary */
+.dod-byte[data-b='f'] {
+  border-left: 1px solid var(--bg);
+}
+
+.dod-byte[data-b='e'] {
+  border-left: 2px solid var(--text-dim);
+}
+
+.dod-byte:hover {
+  outline: 1px solid var(--text);
+  outline-offset: -1px;
+}
+
+.dod-readout {
+  margin: 0.8rem 0 0.2rem;
+  min-height: 1.2em;
+  font-family: ui-monospace, monospace;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+.dod-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.dod-table {
+  margin: 0;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.dod-table .dod-row-active td {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.dod-code {
+  white-space: pre;
+}
+
+.dod-lesson {
+  margin-top: 1rem;
+}
+
+.dod-lesson b {
+  color: var(--text);
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .dod-line-tag {
+    width: 4.4rem;
+  }
+
+  .dod-root .pg-label {
+    min-width: 0;
+  }
+}
