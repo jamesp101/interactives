@@ -10,17 +10,14 @@ import Base from '../../layouts/Base.astro';
     array survives.
   </p>
   <div class="raid-root">
+    <div class="raid-chips" role="group" aria-label="RAID level">
+      <button class="raid-chip" data-level="raid0">RAID 0</button>
+      <button class="raid-chip" data-level="raid1">RAID 1</button>
+      <button class="raid-chip active" data-level="raid5">RAID 5</button>
+      <button class="raid-chip" data-level="raid6">RAID 6</button>
+      <button class="raid-chip" data-level="raid10">RAID 10</button>
+    </div>
     <div class="viz-controls">
-      <label>
-        Level
-        <select class="raid-level">
-          <option value="raid0">RAID 0 — striping</option>
-          <option value="raid1">RAID 1 — mirroring</option>
-          <option value="raid5" selected>RAID 5 — parity</option>
-          <option value="raid6">RAID 6 — dual parity</option>
-          <option value="raid10">RAID 10 — mirrored stripes</option>
-        </select>
-      </label>
       <label>
         Disks
         <input class="raid-disks-input" type="range" min="3" max="8" value="4" />
@@ -32,6 +29,10 @@ import Base from '../../layouts/Base.astro';
     </div>
     <p class="desc raid-blurb"></p>
     <div class="raid-status healthy"></div>
+    <div class="raid-capbar">
+      <div class="cap-usable"></div>
+      <div class="cap-overhead"></div>
+    </div>
     <p class="raid-meta"></p>
     <div class="raid-grid"></div>
     <div class="legend">

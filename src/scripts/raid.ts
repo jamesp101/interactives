@@ -140,7 +140,7 @@ function cellRecoverable(level: Level, n: number, failed: Set<number>, cell: Cel
 }
 
 export function initRaid(root: HTMLElement): void {
-  const levelSel = root.querySelector<HTMLSelectElement>('.raid-level')!;
+  const chips = [...root.querySelectorAll<HTMLButtonElement>('.raid-chip')];
   const disksInput = root.querySelector<HTMLInputElement>('.raid-disks-input')!;
   const disksVal = root.querySelector<HTMLElement>('.raid-disks-val')!;
   const writeBtn = root.querySelector<HTMLButtonElement>('.raid-write')!;
@@ -149,9 +149,11 @@ export function initRaid(root: HTMLElement): void {
   const blurbEl = root.querySelector<HTMLElement>('.raid-blurb')!;
   const statusEl = root.querySelector<HTMLElement>('.raid-status')!;
   const metaEl = root.querySelector<HTMLElement>('.raid-meta')!;
+  const capUsableEl = root.querySelector<HTMLElement>('.cap-usable')!;
+  const capOverheadEl = root.querySelector<HTMLElement>('.cap-overhead')!;
   const gridEl = root.querySelector<HTMLElement>('.raid-grid')!;
 
-  let level: Level = levelSel.value as Level;
+  let level: Level = chips.find((c) => c.classList.contains('active'))!.dataset.level as Level;
   let disks = Number(disksInput.value);
   let stripes = INITIAL_STRIPES;
   let failed = new Set<number>();
@@ -215,7 +217,13 @@ export function initRaid(root: HTMLElement): void {
         tolerance = '1 disk per mirror pair';
         break;
     }
-    metaEl.textContent = `Usable capacity: ${Math.round(capacity * 100)}% of raw · Fault tolerance: ${tolerance} · Minimum disks: ${info.min}`;
+    const usablePct = Math.round(capacity * 100);
+    capUsableEl.style.width = `${usablePct}%`;
+    capUsableEl.textContent = `Usable ${usablePct}%`;
+    capOverheadEl.style.width = `${100 - usablePct}%`;
+    capOverheadEl.textContent = `Redundancy ${100 - usablePct}%`;
+    capOverheadEl.style.display = usablePct === 100 ? 'none' : '';
+    metaEl.textContent = `Fault tolerance: ${tolerance} · Minimum disks: ${info.min}`;
 
     // disk columns
     gridEl.replaceChildren();
@@ -255,14 +263,18 @@ export function initRaid(root: HTMLElement): void {
     rebuildBtn.disabled = st !== 'degraded';
   }
 
-  levelSel.addEventListener('change', () => {
-    level = levelSel.value as Level;
-    clampDisks();
-    stripes = INITIAL_STRIPES;
-    failed = new Set();
-    flashStripe = null;
-    render();
-  });
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      if (chip.dataset.level === level) return;
+      level = chip.dataset.level as Level;
+      for (const c of chips) c.classList.toggle('active', c === chip);
+      clampDisks();
+      stripes = INITIAL_STRIPES;
+      failed = new Set();
+      flashStripe = null;
+      render();
+    });
+  }
   disksInput.addEventListener('input', () => {
     clampDisks();
     stripes = INITIAL_STRIPES;
