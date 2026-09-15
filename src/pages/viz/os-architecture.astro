@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/os-architecture.css';
+import { DIMENSIONS, OSES } from '../../lib/os-arch';
+---
+
+<Base title="OS Architecture — Interactive Algorithms">
+  <h1>OS Architecture</h1>
+  <p class="desc">
+    Linux, macOS, Windows, Android, and iOS solve the same problem with different shapes. Browse one
+    stack at a time or compare all five side by side, then trace an everyday operation from the app
+    down to the hardware and watch where the designs actually diverge.
+  </p>
+
+  <div class="os-root">
+    <div class="viz-controls">
+      <span class="pg-label">system</span>
+      <div class="chip-row">
+        {OSES.map((o) => <button class="chip" data-os={o.id}>{o.name}</button>)}
+      </div>
+    </div>
+    <div class="viz-controls">
+      <span class="pg-label">view</span>
+      <div class="chip-row">
+        <button class="chip" data-mode="single">one stack</button>
+        <button class="chip" data-mode="compare">compare all five</button>
+      </div>
+    </div>
+    <div class="viz-controls">
+      <span class="pg-label">trace</span>
+      <div class="chip-row">
+        <button class="chip" data-op="none">off</button>
+        <button class="chip" data-op="file">read a file</button>
+        <button class="chip" data-op="frame">draw a frame</button>
+        <button class="chip" data-op="launch">launch an app</button>
+      </div>
+    </div>
+
+    <p class="os-question"></p>
+    <div class="viz-controls os-trace-controls hidden">
+      <button class="os-play">Play</button>
+      <button class="os-step">Step</button>
+      <button class="os-reset">Reset</button>
+      <span class="raid-hint os-trace-hint">Each hop lights up the layer it runs in.</span>
+    </div>
+
+    <div class="os-stacks"></div>
+    <p class="raid-hint">
+      Layers are stacked from applications at the top down to hardware. Click any layer for what it
+      is and what runs there. The tinted rule marks where user space ends and the kernel begins —
+      note how much sits below that line on Windows versus how much macOS and Android push above it.
+    </p>
+
+    <div class="os-detail"></div>
+    <div class="os-trace"></div>
+
+    <h2>Where they differ</h2>
+    <div class="os-table-wrap">
+      <table class="complexity os-matrix">
+        <thead>
+          <tr>
+            <th></th>
+            {OSES.map((o) => <th>{o.name}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            DIMENSIONS.map((row) => (
+              <tr>
+                <th scope="row">{row.label}</th>
+                {OSES.map((o) => <td>{row.values[o.id]}</td>)}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Family tree</h2>
+    <div class="os-lineage">
+      <div class="os-branch">
+        <span class="os-branch-root">Unix (1969)</span>
+        <div class="os-branch-kids">
+          <div class="os-twig">
+            <span class="os-twig-label">BSD</span>
+            <span class="os-arrow">→</span>
+            <span class="os-twig-label">Mach + NeXTSTEP</span>
+            <span class="os-arrow">→</span>
+            <span class="os-twig-label">Darwin / XNU</span>
+            <span class="os-arrow">→</span>
+            <span class="os-leaf" style="--tint: #5b8dee">macOS</span>
+            <span class="os-leaf" style="--tint: #e4572e">iOS</span>
+          </div>
+          <div class="os-twig">
+            <span class="os-twig-label">Unix-like, clean-room</span>
+            <span class="os-arrow">→</span>
+            <span class="os-twig-label">Linux kernel (1991)</span>
+            <span class="os-arrow">→</span>
+            <span class="os-leaf" style="--tint: #f2b134">Linux</span>
+            <span class="os-leaf" style="--tint: #9b5de5">Android</span>
+          </div>
+        </div>
+      </div>
+      <div class="os-branch">
+        <span class="os-branch-root">VMS heritage (not Unix)</span>
+        <div class="os-branch-kids">
+          <div class="os-twig">
+            <span class="os-twig-label">Dave Cutler's team, 1988</span>
+            <span class="os-arrow">→</span>
+            <span class="os-twig-label">Windows NT (1993)</span>
+            <span class="os-arrow">→</span>
+            <span class="os-leaf" style="--tint: #3ddc84">Windows</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="raid-hint">
+      macOS and iOS ship the same XNU kernel; Android ships the same Linux kernel as a desktop
+      distribution, plus Binder and friends. Of the five, only Windows has no Unix lineage at all —
+      which is why its API, path syntax, and process model are the odd ones out.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { initOsArchitecture } from '../../scripts/os-architecture';
+  document.querySelectorAll<HTMLElement>('.os-root').forEach(initOsArchitecture);
+</script>
